@@ -23,18 +23,15 @@ Vagrant.configure(2) do |config|
   # ensure puppet is installed
   config.vm.provision :shell, :path => "scripts/ubuntu.sh"
 
-  # install librarian puppet and dependencies
+  # install r10k and dependencies
   config.vm.provision "shell", inline: <<-SHELL
-    echo "Installing gcc..."
-    sudo apt-get -y install gcc >/dev/null
-    echo "Installing ruby-dev..."
-    sudo apt-get -y install ruby-dev >/dev/null
-    echo "Installing librarian-puppet..."
-    gem install librarian-puppet >/dev/null
+    echo "Installing git..."
+    sudo apt-get -y install git >/dev/null
+    echo "Installing r10k..."
+    gem install r10k >/dev/null
     cd /vagrant/puppet
-    librarian-puppet config --local path modules-contrib
-    cho "librarian-puppet installing puppet modules..."
-    librarian-puppet install
+    echo "r10k installing puppet modules..."
+    sudo r10k puppetfile install
   SHELL
 
   config.vm.provision "puppet" do |puppet|
