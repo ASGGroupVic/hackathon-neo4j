@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "parallels/ubuntu-14.04"
+
   config.vm.network "forwarded_port", guest: 7474, host: 7474
 
   # Share an additional folder to the guest VM. The first argument is
@@ -12,10 +12,19 @@ Vagrant.configure(2) do |config|
   # config.vm.synced_folder "../data", "/vagrant_data"
 
   config.vm.provider "parallels" do |v|
+    config.vm.box = "parallels/ubuntu-14.04"
     v.name = "Hackathon-Ubuntu"
     v.check_guest_tools = false
     v.update_guest_tools = true
     v.optimize_power_consumption = false
+    v.memory = 1024
+    v.cpus = 2
+  end
+
+  config.vm.provider "virtualbox" do |v|
+    config.vm.box = "ubuntu/trusty64"
+    v.name = "Hackathon-Ubuntu"
+    v.gui = true
     v.memory = 1024
     v.cpus = 2
   end
