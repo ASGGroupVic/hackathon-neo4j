@@ -1,19 +1,17 @@
-node 'vagrant.vm' {
-    include 'docker'
 
-    docker::image { 'ubuntu':
-        image_tag => 'precise'
-    }
+  include 'docker'
 
-    docker::image { 'tpires/neo4j':
-    }
+  #docker::image { 'ubuntu':
+  #    image_tag => 'trusty'
+  #}
 
-    docker::run { 'neo4j':
-      image => 'tpires/neo4j',
-      ports => '7474:7474',
-      use_name => true,
-      privileged => true,
-      restart_service => true,
+  docker::image { 'tpires/neo4j':
+  }
 
-    }
-}
+  docker::run { 'neo4j':
+    image => 'tpires/neo4j',
+    ports => '7474:7474',
+    use_name => true,
+    privileged => true,
+    restart_service => true,
+  }
