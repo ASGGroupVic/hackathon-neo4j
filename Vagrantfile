@@ -38,6 +38,9 @@ Vagrant.configure(2) do |config|
     sudo apt-get -y install git >/dev/null
     echo "Installing r10k..."
     gem install r10k >/dev/null
+    echo "Create required folders"
+    mkdir -p /vagrant/puppet/modules-contrib;
+    mkdir -p /vagrant/puppet/modules-custom;
     cd /vagrant/puppet
     echo "r10k installing puppet modules..."
     sudo r10k puppetfile install
