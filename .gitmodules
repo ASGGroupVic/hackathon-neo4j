@@ -1,0 +1,3 @@
+[submodule "vagrant_data/config/api"]
+	path = vagrant_data/config/api
+	url = git@github.com:SMSManagementAndTechnology/hackathon-server.git
