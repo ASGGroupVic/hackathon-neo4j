@@ -29,28 +29,11 @@ Vagrant.configure(2) do |config|
     v.cpus = 2
   end
 
-  # ensure puppet is installed
-  config.vm.provision :shell, :path => "scripts/ubuntu.sh"
-
-  # install r10k and dependencies
-  config.vm.provision "shell", inline: <<-SHELL
-    echo "Installing git..."
-    sudo apt-get -y install git >/dev/null
-    echo "Installing r10k..."
-    gem install r10k >/dev/null
-    echo "Create required folders"
-    mkdir -p /vagrant/puppet/modules-contrib;
-    mkdir -p /vagrant/puppet/modules-custom;
-    cd /vagrant/puppet
-    echo "r10k installing puppet modules..."
-    sudo r10k puppetfile install
-  SHELL
-
-  config.vm.provision "puppet" do |puppet|
-    puppet.manifests_path = "puppet/manifests"
-    puppet.module_path = ["puppet/modules-contrib","puppet/modules-custom"]
-    puppet.manifest_file = "site.pp"
-    puppet.options = "--verbose --debug"
+  config.vm.provision "docker" do |d|
+    d.pull_images "tpires/neo4j"
+    d.run "tpires/neo4j",
+      daemonize: true,
+      args:   "--interactive --tty --name neo4j --privileged --publish 7474:7474"
   end
 
 end
