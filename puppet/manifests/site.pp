@@ -14,5 +14,5 @@
     use_name => true,
     privileged => true,
     restart_service => true,
-    volumes => ['~/workspace/hackathon-server:/home/hackathon-server']
+    volumes => ['/workspace/hackathon-server:/home/hackathon-server']
   }
