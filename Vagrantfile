@@ -9,7 +9,7 @@ Vagrant.configure(2) do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  # config.vm.synced_folder "../data", "/vagrant_data"
+  config.vm.synced_folder "./vagrant_data", "/vagrant_data"
 
   config.vm.provider "parallels" do |v|
     config.vm.box = "parallels/ubuntu-14.04"
@@ -30,8 +30,9 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "docker" do |d|
-    d.pull_images "tpires/neo4j"
-    d.run "tpires/neo4j",
+    d.build_image "/vagrant_data/config/neo4j",
+      args: "-t smsmt/xray-neo4j"
+    d.run "smsmt/xray-neo4j",
       daemonize: true,
       args:   "--interactive --tty --name neo4j --privileged --publish 7474:7474"
   end
