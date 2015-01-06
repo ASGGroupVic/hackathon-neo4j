@@ -4,7 +4,8 @@
 Vagrant.configure(2) do |config|
 
   config.vm.network "forwarded_port", guest: 7474, host: 7474
-  #config.vm.network "forwarded_port", guest: 22222, host: 22222
+  config.vm.network "forwarded_port", guest: 22222, host: 22222
+  config.vm.network "forwarded_port", guest: 8080, host: 8080
 
   # Share an additional folder to the guest VM. The first argument is
   # the path on the host to the actual folder. The second argument is
@@ -36,7 +37,7 @@ Vagrant.configure(2) do |config|
 
     d.run "smsmt/xray-neo4j",
       daemonize: true,
-      args:   "--name neo4j -p 7474:7474 -p 22222:22"
+      args:   "--name neo4j -p 7474:7474 -p 22222:22 -v /data:/data"
   end
 
   config.vm.provision "docker" do |d|
