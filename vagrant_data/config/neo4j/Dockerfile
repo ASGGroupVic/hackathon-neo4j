@@ -9,6 +9,7 @@ COPY id_rsa.pub /root/.ssh/authorized_keys
 COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 RUN chmod 700 /root/.ssh; chmod 640 /root/.ssh/authorized_keys
+RUN sed -i "s|org.neo4j.server.database.location=data/graph.db|org.neo4j.server.database.location=/data/graph.db|g" /var/lib/neo4j/conf/neo4j-server.properties
 
 EXPOSE 22
 EXPOSE 7474

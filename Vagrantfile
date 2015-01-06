@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-    mkdir /data
+    mkdir -p /data
   SHELL
 
   config.vm.provision "docker" do |d|
