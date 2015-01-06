@@ -35,7 +35,16 @@ Vagrant.configure(2) do |config|
 
     d.run "smsmt/xray-neo4j",
       daemonize: true,
-      args:   "--interactive --tty --name neo4j --privileged --publish 7474:7474"
+      args:   "--name neo4j -p 7474:7474"
+  end
+
+  config.vm.provision "docker" do |d|
+    d.build_image "/vagrant_data/config/api",
+      args:   "-t smsmt/xray-api"
+
+    d.run "smsmt/xray-api",
+      daemonize: true,
+      args:   "--name api -p 8080:8080"
   end
 
 end
