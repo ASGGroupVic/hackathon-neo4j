@@ -31,8 +31,45 @@ Vagrant.configure(2) do |config|
     v.cpus = 2
   end
 
+  config.vm.provider :aws do |aws, override|
+    #config.vm.box = "dummy"
+    aws.access_key_id = ENV['AWS_ACCESS_KEY']
+    aws.secret_access_key = ENV['AWS_SECRECT_ACCESS_KEY']
+    #aws.security_groups = ["sg-4929de2c"]
+    aws.keypair_name = "Hackathon2"
+    aws.instance_type = "m3.medium"
+#   Removed this as it creates new Elastic Block Storage volume on every run
+#    aws.block_device_mapping =    [  {
+#       'DeviceName'              => '/dev/sdf',
+#       'VirtualName'             => 'data',
+#       'Ebs.VolumeSize'          => 10
+#     }]
+    aws.region = "ap-southeast-2"
+    aws.ami = "ami-2def8d17"
+    aws.tags = {
+      'Name' => 'Hackathon-Neo4j',
+    }
+    override.vm.box = "dummy"
+    override.ssh.username = "ubuntu"
+    override.ssh.private_key_path = "Hackathon2.pem"
+  end
+
   config.vm.provision "shell", inline: <<-SHELL
-    mkdir -p /data
+    echo "Downloading EC2 api tools..."
+    curl "http://s3.amazonaws.com/ec2-downloads/ec2-api-tools.zip" -o "ec2-api-tools.zip"
+    sudo mkdir -p /usr/local/ec2
+    unzip -o ec2-api-tools.zip -d /usr/local/ec2
+    export EC2_HOME="/usr/local/ec2/ec2-api-tools-1.7.2.4"
+    export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-amd64/jre"
+    rm ec2-api-tools.zip
+    #echo export PATH=/usr/local/ec2/ec2-api-tools-1.7.2.4/bin:$PATH >> ~/.bashrc
+    #source ~/.bashrc
+    instance=$($EC2_HOME/bin/ec2-describe-instances --aws-access-key #{ENV['AWS_ACCESS_KEY']} --aws-secret-key #{ENV['AWS_SECRECT_ACCESS_KEY']} --region ap-southeast-2 --filter 'tag:Name=Hackathon-Neo4j' --filter 'instance-state-name=running' | grep INSTANCE | awk {'print $2'})
+    volume=$($EC2_HOME/bin/ec2-describe-volumes -aws-access-key #{ENV['AWS_ACCESS_KEY']} --aws-secret-key #{ENV['AWS_SECRECT_ACCESS_KEY']} --region ap-southeast-2 --filter 'tag:Name=xray 2b' | grep VOLUME |  awk {'print $2'})
+    echo "Attaching EBS..."
+    $EC2_HOME/bin/ec2-attach-volume -aws-access-key #{ENV['AWS_ACCESS_KEY']}  --aws-secret-key #{ENV['AWS_SECRECT_ACCESS_KEY']} "$volume" --instance "$instance" --device "/dev/sdf" --region ap-southeast-2
+    sudo mkdir -p /data
+    sudo echo /dev/xvdf  /data  auto  defaults,nobootwait,comment=neo4j 0 0 | sudo tee /etc/fstab
   SHELL
 
   config.vm.provision "docker" do |d|
