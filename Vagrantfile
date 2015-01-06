@@ -31,6 +31,10 @@ Vagrant.configure(2) do |config|
     v.cpus = 2
   end
 
+  config.vm.provision "shell", inline: <<-SHELL
+    mkdir /data
+  SHELL
+
   config.vm.provision "docker" do |d|
     d.build_image "/vagrant_data/config/neo4j",
       args:   "-t smsmt/xray-neo4j"
