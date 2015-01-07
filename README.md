@@ -12,11 +12,13 @@ AWS_ACCESS_KEY = "[Your AWS access key]" AWS_SECRET_ACCESS_KEY = "[Your AWS secr
 
 ##AWS vagrant plugin Note
 
-*Problem* 
+**Problem**
+
 Error when deploying to AWS using plugin version 0.6.0 (latest at the time) you recieve the following error:
 No host IP was given to the Vagrant core NFS helper. This is an internal error that should be reported as a bug. 
 
-*Solution*  
+**Solution**
+
 Install the vagrant-aws plugin version 0.5.0 with the following command:
 vagrant plugin install vagrant-aws --plugin-version 0.5.0 
 
